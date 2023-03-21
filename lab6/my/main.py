@@ -2,6 +2,7 @@ import os
 import sys
 
 import numpy as np
+import pandas as pd
 from matplotlib import pyplot as plt
 from PyQt5 import QtCore, uic
 from PyQt5.QtCore import pyqtSlot
@@ -110,17 +111,18 @@ class MainWindow(QDialog):
 
         y = []
         for i in range(len(LIFE_STAGES_PM_PERCENTS)):
-            cur_pm = PM * LIFE_STAGES_PM_PERCENTS[i] / 100.0
-            cur_tm = TM * LIFE_STAGES_TM_PERCENTS[i] / 100.0
+            cur_pm = round(PM * LIFE_STAGES_PM_PERCENTS[i] / 100.0, round_to)
+            cur_tm = round(TM * LIFE_STAGES_TM_PERCENTS[i] / 100.0, round_to)
 
-            pm_str = f'{round(cur_pm, round_to)} ({LIFE_STAGES_PM_PERCENTS[i]} %)'
-            tm_str = f'{round(cur_tm, round_to)} ({LIFE_STAGES_TM_PERCENTS[i]} %)'
+            pm_str = f'{cur_pm} ({LIFE_STAGES_PM_PERCENTS[i]} %)'
+            tm_str = f'{cur_tm} ({LIFE_STAGES_TM_PERCENTS[i]} %)'
             if i == 0:
                 pm_str = f'(+{pm_str})'
                 tm_str = f'(+{tm_str})'
             if i < 5:
-                for _ in range(round(cur_tm)):
-                    y.append(round(round(cur_pm) / round(cur_tm)))
+                cur_pm = round(cur_pm)
+                cur_tm = round(cur_tm)
+                y.extend([round(cur_pm / cur_tm)] * cur_tm)
 
             self.tableLifeStages.setItem(i, 0, QTableWidgetItem(pm_str))
             self.tableLifeStages.setItem(i, 1, QTableWidgetItem(tm_str))
@@ -132,9 +134,17 @@ class MainWindow(QDialog):
             self.tableWBS.setItem(i, 1, QTableWidgetItem(person_months_str))
 
 
-        x = [i + 1 for i in range(len(y))]
-
-        plt.bar(x, y)
+        y = pd.Series(y, index=[i + 1 for i in range(len(y))])
+        ax = y.plot(kind='bar')
+        rects = ax.patches
+        ax.set_title('Количество работников на протяжении всего цикла создания продукта')
+        ax.set_xlabel('Номер месяца')
+        ax.set_ylabel('Количество работников')
+        ax.set_xticklabels(ax.get_xticklabels(), rotation=0)
+        labels = [f"{v}" for v in y]
+        for rect, label in zip(rects, labels):
+            height = rect.get_height()
+            ax.text(rect.get_x() + rect.get_width() / 2, height, label, ha="center", va="bottom")
         plt.show()
 
     @pyqtSlot(name="on_task4EstimateVarProjectButton_clicked")
