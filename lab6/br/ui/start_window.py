@@ -91,3 +91,17 @@ class TaskWindow(QMainWindow):
         self.ui.tableCOCOMO.setItem(7, 1, QTableWidgetItem(str('{:.3f}'.format(res['maPeople']))))
 
         self.ui.budget.setText(str('{:.3f}'.format(res['budget'])))
+
+
+
+import sys
+from PyQt5.QtWidgets import (QApplication, )
+def main():
+    app = QApplication(sys.argv)
+    window = TaskWindow()
+    window.show()
+    return app.exec()
+
+
+if __name__ == '__main__':
+    sys.exit(main())
