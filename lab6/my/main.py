@@ -6,7 +6,7 @@ import pandas as pd
 from matplotlib import pyplot as plt
 from PyQt5 import QtCore, uic
 from PyQt5.QtCore import pyqtSlot
-from PyQt5.QtWidgets import QApplication, QDialog, QHeaderView, QTableWidgetItem, QLineEdit
+from PyQt5.QtWidgets import QApplication, QDialog, QHeaderView, QTableWidgetItem, QLineEdit, QComboBox
 
 QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling, True)
 QApplication.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps, True)
@@ -149,107 +149,81 @@ class MainWindow(QDialog):
 
     @pyqtSlot(name="on_task4EstimateVarProjectButton_clicked")
     def task4EstimateVarProject(self):
-        # labor_clean = round(self.calc_PM_from_ui(), 2)
-        # time_clean = round(self.calc_TM_from_ui(), 2)
-        #
-        # labor = round(labor_clean * 1.08, 2)
-        # time = round(time_clean * 1.36, 2)
-        #
-        # self.ui.laborLabel.setText(f'Трудоемкость: {labor}')
-        # self.ui.timeLabel.setText(f'Время разработки: {time}')
-        #
-        # for i in range(8):
-        #     self.ui.wbsTable.setItem(i, 1, QTableWidgetItem(
-        #         str(round(labor * int(self.ui.wbsTable.item(i, 0).text()) / 100.0, 2))))
-        #
-        # self.ui.wbsTable.setItem(8, 1, QTableWidgetItem(str(labor)))
-        #
-        # self.ui.classicTable.setItem(0, 0, QTableWidgetItem(str(round(labor_clean * 0.08, 2))))
-        # self.ui.classicTable.setItem(1, 0, QTableWidgetItem(str(round(labor_clean * 0.18, 2))))
-        # self.ui.classicTable.setItem(2, 0, QTableWidgetItem(str(round(labor_clean * 0.25, 2))))
-        # self.ui.classicTable.setItem(3, 0, QTableWidgetItem(str(round(labor_clean * 0.26, 2))))
-        # self.ui.classicTable.setItem(4, 0, QTableWidgetItem(str(round(labor_clean * 0.31, 2))))
-        # self.ui.classicTable.setItem(5, 0, QTableWidgetItem(str(round(labor_clean, 2))))
-        # self.ui.classicTable.setItem(6, 0, QTableWidgetItem(str(round(labor, 2))))
-        # self.ui.classicTable.setItem(0, 1, QTableWidgetItem(str(round(time_clean * 0.36, 2))))
-        # self.ui.classicTable.setItem(1, 1, QTableWidgetItem(str(round(time_clean * 0.36, 2))))
-        # self.ui.classicTable.setItem(2, 1, QTableWidgetItem(str(round(time_clean * 0.18, 2))))
-        # self.ui.classicTable.setItem(3, 1, QTableWidgetItem(str(round(time_clean * 0.18, 2))))
-        # self.ui.classicTable.setItem(4, 1, QTableWidgetItem(str(round(time_clean * 0.28, 2))))
-        # self.ui.classicTable.setItem(5, 1, QTableWidgetItem(str(round(time_clean, 2))))
-        # self.ui.classicTable.setItem(6, 1, QTableWidgetItem(str(round(time, 2))))
-        #
-        # y = []
-        # for i in range(5):
-        #     t = round(float(self.ui.classicTable.item(i, 1).text()))
-        #     for _ in range(t):
-        #         y.append(round(round(float(self.ui.classicTable.item(i, 0).text())) / t))
-        #
-        # x = [i + 1 for i in range(len(y))]
-        #
-        # plt.bar(x, y)
-        # plt.show()
-        '''
-        Режим: обычный
-        KLOC=25000
-        Планируется привлечь высококвалифицированную команду программистов с высоким знанием языков программирования.
-        В проекте будут использованы самые современные методы программирования.
-        Также планируется высокий уровень автоматизации процесса разработки за счет использования эффективных программных инструментов.
-
-        Произвести оценку по методике COCOMO для обычного режима
-        '''
+        # self.projectModeComboBox: QComboBox
+        self.projectModeComboBox.setCurrentText(0)
+        self.projectModeComboBox.setCurrentText(0)
+        self.projectModeComboBox.setCurrentText(0)
+        self.projectModeComboBox.setCurrentText(0)
+        self.projectModeComboBox.setCurrentText(0)
+        KLOC = 25
+        PCAP = высокий
+        LEXP = высокий
+        MODP = очень высокий
+        TOOL = высокий
+        Mode = обычный
         pass
 
     @pyqtSlot(name="on_task3ExperimentButton_clicked")
     def task3Experiment(self):
-        project_size = 100
-        # очень низкий, номинальный, очень высокий
-        for cplx_index in [0, 2, 4]:
-            cplx_value = EAF_ATTRIBUTES_VALUES['CPLX'][cplx_index]
-            # обычный, промежуточный, встроенный
-            for mode_index in range(3):
-                mode_constants = CONSTANTS_FOR_PROJECTS_MODES[mode_index]
-                c1, p1, c2, p2 = mode_constants['c1'], mode_constants['p1'], mode_constants['c2'], mode_constants['p2']
-                y_acap_labor = []
-                y_aexp_labor = []
-                y_pcap_labor = []
-                y_lexp_labor = []
-                y_acap_time = []
-                y_aexp_time = []
-                y_pcap_time = []
-                y_lexp_time = []
+        try:
+            project_size = 100
+            mode_index, mode_name = 1, 'промежуточный'
+            mode_constants = CONSTANTS_FOR_PROJECTS_MODES[mode_index]
+            c1, p1, c2, p2 = mode_constants['c1'], mode_constants['p1'], mode_constants['c2'], mode_constants['p2']
 
-                x = [1, 2, 3]
+            cplx_indexes = [0, 2, 4]
+            cplx_dots = ['^-', 'empty', 'o-', 'empty', '*-']
+            cplx_names = ['очень низкий', 'номинальный', 'очень высокий']
 
-                # Способности аналитика -- низкий, номинальный, высокий
-                for pers_quality_index in range(1, 4):
-                    acap_value = EAF_ATTRIBUTES_VALUES['ACAP'][pers_quality_index]
-                    aexp_value = EAF_ATTRIBUTES_VALUES['AEXP'][pers_quality_index]
-                    pcap_value = EAF_ATTRIBUTES_VALUES['PCAP'][pers_quality_index]
-                    lexp_value = EAF_ATTRIBUTES_VALUES['LEXP'][pers_quality_index]
+            pq_indexes = [0, 1, 2, 3]
+            pq_names = ['очень низкий', 'низкий', 'номинальный', 'высокий']
 
-                    y_acap_labor.append(calc_PM(c1, p1, calc_EAF([acap_value, cplx_value]), project_size))
-                    y_acap_time.append(calc_TM(c2, p2, y_acap_labor[-1]))
+            pq_attribute_names = ['ACAP', 'AEXP', 'PCAP', 'LEXP']
+            pq_attribute_colors = ['r', 'b', 'g', 'y']
 
-                    y_aexp_labor.append(calc_PM(c1, p1, calc_EAF([aexp_value, cplx_value]), project_size))
-                    y_aexp_time.append(calc_TM(c2, p2, y_aexp_labor[-1]))
+            ys_PM = {cplx_name: {pq_attribute_name: [] for pq_attribute_name in pq_attribute_names} for cplx_name in cplx_names}
+            ys_TM = {cplx_name: {pq_attribute_name: [] for pq_attribute_name in pq_attribute_names} for cplx_name in cplx_names}
 
-                    y_pcap_labor.append(calc_PM(c1, p1, calc_EAF([pcap_value, cplx_value]), project_size))
-                    y_pcap_time.append(calc_TM(c2, p2, y_pcap_labor[-1]))
+            f, (ax_PM, ax_TM) = plt.subplots(1, 2)
+            x = [1, 2, 3, 4]
 
-                    y_lexp_labor.append(calc_PM(c1, p1, calc_EAF([lexp_value, cplx_value]), project_size))
-                    y_lexp_time.append(calc_TM(c2, p2, y_lexp_labor[-1]))
 
-                plt.suptitle(f'PM, TM; mode={mode_index}, CPLX={cplx_index}')
-                plt.subplot(121)
-                line1, = plt.plot(x, y_acap_labor, 'r', label='ACAP')
-                line2, = plt.plot(x, y_aexp_labor, 'g', label='AEXP')
-                line3, = plt.plot(x, y_pcap_labor, 'b', label='PCAP')
-                line4, = plt.plot(x, y_lexp_labor, 'y', label='LEXP')
-                plt.subplot(122)
-                plt.plot(x, y_acap_time, 'r', x, y_aexp_time, 'g', x, y_pcap_time, 'b', x, y_lexp_time, 'y')
-                plt.legend(handles=[line1, line2, line3, line4])
-                plt.show()
+            for cplx_index, cplx_name in zip(cplx_indexes, cplx_names):
+                cplx_value = EAF_ATTRIBUTES_VALUES['CPLX'][cplx_index]
+
+                for pq_attribute_index, pq_attribute_name in enumerate(pq_attribute_names):
+                    for pq_index, pq_name in zip(pq_indexes, pq_names):
+                        pq_attribute_value = EAF_ATTRIBUTES_VALUES[pq_attribute_name][pq_index]
+                        ys_PM[cplx_name][pq_attribute_name].append(calc_PM(c1, p1, calc_EAF([pq_attribute_value, cplx_value]), project_size))
+                        ys_TM[cplx_name][pq_attribute_name].append(calc_TM(c2, p2, ys_PM[cplx_name][pq_attribute_name][-1]))
+
+                    format_ = f'{pq_attribute_colors[pq_attribute_index]}{cplx_dots[cplx_index]}'
+                    label_ = f'{pq_attribute_name}, CPLX: {cplx_name}'
+
+                    ax_PM.plot(ys_PM[cplx_name][pq_attribute_name], format_, label=label_)
+                    ax_TM.plot(x, ys_TM[cplx_name][pq_attribute_name], format_, label=label_)
+
+
+            ax_PM.set_title('Трудозатраты (PM)')
+            ax_PM.set_xlabel('Уровень атрибута персонала')
+            ax_PM.set_ylabel('Трудозатраты (в человеко-месяцах)')
+            ax_PM.set_xticklabels(['', 'очень низкий', '', 'низкий', '', 'номинальный', '', 'высокий'])
+            ax_PM.grid()
+            ax_PM.legend()
+
+            ax_TM.set_title('Время (TM)')
+            ax_TM.set_xlabel('Уровень атрибута персонала')
+            ax_TM.set_ylabel('Время (в месяцах)')
+            ax_TM.set_xticklabels(['', 'очень низкий', '', 'низкий', '', 'номинальный', '', 'высокий'])
+            ax_TM.grid()
+            ax_TM.legend()
+
+            f.suptitle(f'SIZE: {project_size}, mode: {mode_name}')
+
+            plt.show()
+
+        except Exception as e:
+            print(e)
 
 
 def main():
