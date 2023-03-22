@@ -1,12 +1,11 @@
 import os
 import sys
-
 import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
 from PyQt5 import QtCore, uic
 from PyQt5.QtCore import pyqtSlot
-from PyQt5.QtWidgets import QApplication, QDialog, QHeaderView, QTableWidgetItem, QLineEdit, QComboBox
+from PyQt5.QtWidgets import QApplication, QDialog, QHeaderView, QTableWidgetItem
 
 QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling, True)
 QApplication.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps, True)
@@ -133,7 +132,6 @@ class MainWindow(QDialog):
             self.tableWBS.setItem(i, 0, QTableWidgetItem(budget_percents_str))
             self.tableWBS.setItem(i, 1, QTableWidgetItem(person_months_str))
 
-
         y = pd.Series(y, index=[i + 1 for i in range(len(y))])
         ax = y.plot(kind='bar')
         rects = ax.patches
@@ -145,85 +143,77 @@ class MainWindow(QDialog):
         for rect, label in zip(rects, labels):
             height = rect.get_height()
             ax.text(rect.get_x() + rect.get_width() / 2, height, label, ha="center", va="bottom")
+
         plt.show()
 
     @pyqtSlot(name="on_task4EstimateVarProjectButton_clicked")
     def task4EstimateVarProject(self):
-        # self.projectModeComboBox: QComboBox
-        self.projectModeComboBox.setCurrentText(0)
-        self.projectModeComboBox.setCurrentText(0)
-        self.projectModeComboBox.setCurrentText(0)
-        self.projectModeComboBox.setCurrentText(0)
-        self.projectModeComboBox.setCurrentText(0)
-        KLOC = 25
-        PCAP = высокий
-        LEXP = высокий
-        MODP = очень высокий
-        TOOL = высокий
-        Mode = обычный
-        pass
+        self.sizeSpinBox.setValue(25.)
+        self.pcapComboBox.setCurrentText('Высокий')
+        self.lexpComboBox.setCurrentText('Высокий')
+        self.modpComboBox.setCurrentText('Очень высокий')
+        self.toolComboBox.setCurrentText('Высокий')
+        self.projectModeComboBox.setCurrentText('Обычный')
+
+        self.task2EstimateProject()
 
     @pyqtSlot(name="on_task3ExperimentButton_clicked")
     def task3Experiment(self):
-        try:
-            project_size = 100
-            mode_index, mode_name = 1, 'промежуточный'
-            mode_constants = CONSTANTS_FOR_PROJECTS_MODES[mode_index]
-            c1, p1, c2, p2 = mode_constants['c1'], mode_constants['p1'], mode_constants['c2'], mode_constants['p2']
+        project_size = 100
+        mode_index, mode_name = 1, 'промежуточный'
+        mode_constants = CONSTANTS_FOR_PROJECTS_MODES[mode_index]
+        c1, p1, c2, p2 = mode_constants['c1'], mode_constants['p1'], mode_constants['c2'], mode_constants['p2']
 
-            cplx_indexes = [0, 2, 4]
-            cplx_dots = ['^-', 'empty', 'o-', 'empty', '*-']
-            cplx_names = ['очень низкий', 'номинальный', 'очень высокий']
+        cplx_indexes = [0, 2, 4]
+        cplx_dots = ['^-', 'empty', 'o-', 'empty', '*-']
+        cplx_names = ['очень низкий', 'номинальный', 'очень высокий']
 
-            pq_indexes = [0, 1, 2, 3]
-            pq_names = ['очень низкий', 'низкий', 'номинальный', 'высокий']
+        pq_indexes = [0, 1, 2, 3]
+        pq_names = ['очень низкий', 'низкий', 'номинальный', 'высокий']
 
-            pq_attribute_names = ['ACAP', 'AEXP', 'PCAP', 'LEXP']
-            pq_attribute_colors = ['r', 'b', 'g', 'y']
+        pq_attribute_names = ['ACAP', 'AEXP', 'PCAP', 'LEXP']
+        pq_attribute_colors = ['r', 'b', 'g', 'y']
 
-            ys_PM = {cplx_name: {pq_attribute_name: [] for pq_attribute_name in pq_attribute_names} for cplx_name in cplx_names}
-            ys_TM = {cplx_name: {pq_attribute_name: [] for pq_attribute_name in pq_attribute_names} for cplx_name in cplx_names}
+        ys_PM = {cplx_name: {pq_attribute_name: [] for pq_attribute_name in pq_attribute_names}
+                 for cplx_name in cplx_names}
+        ys_TM = {cplx_name: {pq_attribute_name: [] for pq_attribute_name in pq_attribute_names}
+                 for cplx_name in cplx_names}
 
-            f, (ax_PM, ax_TM) = plt.subplots(1, 2)
-            x = [1, 2, 3, 4]
+        f, (ax_PM, ax_TM) = plt.subplots(1, 2)
+        x = [1, 2, 3, 4]
 
+        for cplx_index, cplx_name in zip(cplx_indexes, cplx_names):
+            cplx_value = EAF_ATTRIBUTES_VALUES['CPLX'][cplx_index]
 
-            for cplx_index, cplx_name in zip(cplx_indexes, cplx_names):
-                cplx_value = EAF_ATTRIBUTES_VALUES['CPLX'][cplx_index]
+            for pq_attribute_index, pq_attribute_name in enumerate(pq_attribute_names):
+                for pq_index, pq_name in zip(pq_indexes, pq_names):
+                    pq_attribute_value = EAF_ATTRIBUTES_VALUES[pq_attribute_name][pq_index]
+                    ys_PM[cplx_name][pq_attribute_name].append(calc_PM(
+                        c1, p1, calc_EAF([pq_attribute_value, cplx_value]), project_size))
+                    ys_TM[cplx_name][pq_attribute_name].append(calc_TM(c2, p2, ys_PM[cplx_name][pq_attribute_name][-1]))
 
-                for pq_attribute_index, pq_attribute_name in enumerate(pq_attribute_names):
-                    for pq_index, pq_name in zip(pq_indexes, pq_names):
-                        pq_attribute_value = EAF_ATTRIBUTES_VALUES[pq_attribute_name][pq_index]
-                        ys_PM[cplx_name][pq_attribute_name].append(calc_PM(c1, p1, calc_EAF([pq_attribute_value, cplx_value]), project_size))
-                        ys_TM[cplx_name][pq_attribute_name].append(calc_TM(c2, p2, ys_PM[cplx_name][pq_attribute_name][-1]))
+                format_ = f'{pq_attribute_colors[pq_attribute_index]}{cplx_dots[cplx_index]}'
+                label_ = f'{pq_attribute_name}, CPLX: {cplx_name}'
 
-                    format_ = f'{pq_attribute_colors[pq_attribute_index]}{cplx_dots[cplx_index]}'
-                    label_ = f'{pq_attribute_name}, CPLX: {cplx_name}'
+                ax_PM.plot(ys_PM[cplx_name][pq_attribute_name], format_, label=label_)
+                ax_TM.plot(x, ys_TM[cplx_name][pq_attribute_name], format_, label=label_)
 
-                    ax_PM.plot(ys_PM[cplx_name][pq_attribute_name], format_, label=label_)
-                    ax_TM.plot(x, ys_TM[cplx_name][pq_attribute_name], format_, label=label_)
+        ax_PM.set_title('Трудозатраты (PM)')
+        ax_PM.set_xlabel('Уровень атрибута персонала')
+        ax_PM.set_ylabel('Трудозатраты (в человеко-месяцах)')
+        ax_PM.set_xticklabels(['', 'очень низкий', '', 'низкий', '', 'номинальный', '', 'высокий'])
+        ax_PM.grid()
+        ax_PM.legend()
 
+        ax_TM.set_title('Время (TM)')
+        ax_TM.set_xlabel('Уровень атрибута персонала')
+        ax_TM.set_ylabel('Время (в месяцах)')
+        ax_TM.set_xticklabels(['', 'очень низкий', '', 'низкий', '', 'номинальный', '', 'высокий'])
+        ax_TM.grid()
+        ax_TM.legend()
 
-            ax_PM.set_title('Трудозатраты (PM)')
-            ax_PM.set_xlabel('Уровень атрибута персонала')
-            ax_PM.set_ylabel('Трудозатраты (в человеко-месяцах)')
-            ax_PM.set_xticklabels(['', 'очень низкий', '', 'низкий', '', 'номинальный', '', 'высокий'])
-            ax_PM.grid()
-            ax_PM.legend()
-
-            ax_TM.set_title('Время (TM)')
-            ax_TM.set_xlabel('Уровень атрибута персонала')
-            ax_TM.set_ylabel('Время (в месяцах)')
-            ax_TM.set_xticklabels(['', 'очень низкий', '', 'низкий', '', 'номинальный', '', 'высокий'])
-            ax_TM.grid()
-            ax_TM.legend()
-
-            f.suptitle(f'SIZE: {project_size}, mode: {mode_name}')
-
-            plt.show()
-
-        except Exception as e:
-            print(e)
+        f.suptitle(f'SIZE: {project_size}, mode: {mode_name}')
+        plt.show()
 
 
 def main():
@@ -234,8 +224,4 @@ def main():
 
 
 if __name__ == '__main__':
-    # sys.exit(main())
-    app = QApplication([])
-    application = MainWindow()
-    application.show()
-    sys.exit(app.exec())
+    sys.exit(main())

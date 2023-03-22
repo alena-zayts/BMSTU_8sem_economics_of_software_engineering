@@ -285,6 +285,12 @@
       <height>22</height>
      </rect>
     </property>
+    <property name="sizePolicy">
+     <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+      <horstretch>0</horstretch>
+      <verstretch>0</verstretch>
+     </sizepolicy>
+    </property>
     <property name="currentIndex">
      <number>2</number>
     </property>
@@ -1075,6 +1081,43 @@
      <string>Рассчитать введенный проект (задание 2)</string>
     </property>
    </widget>
+   <zorder>groupBox</zorder>
+   <zorder>label_14</zorder>
+   <zorder>projectModeComboBox</zorder>
+   <zorder>label_5</zorder>
+   <zorder>aexpComboBox</zorder>
+   <zorder>sizeSpinBox</zorder>
+   <zorder>toolComboBox</zorder>
+   <zorder>scedComboBox</zorder>
+   <zorder>timeComboBox</zorder>
+   <zorder>label</zorder>
+   <zorder>relyComboBox</zorder>
+   <zorder>label_10</zorder>
+   <zorder>modpComboBox</zorder>
+   <zorder>label_3</zorder>
+   <zorder>label_7</zorder>
+   <zorder>label_34</zorder>
+   <zorder>label_4</zorder>
+   <zorder>cplxComboBox</zorder>
+   <zorder>pcapComboBox</zorder>
+   <zorder>virtComboBox</zorder>
+   <zorder>label_16</zorder>
+   <zorder>label_13</zorder>
+   <zorder>acapComboBox</zorder>
+   <zorder>lexpComboBox</zorder>
+   <zorder>label_9</zorder>
+   <zorder>label_6</zorder>
+   <zorder>label_2</zorder>
+   <zorder>label_11</zorder>
+   <zorder>label_12</zorder>
+   <zorder>label_17</zorder>
+   <zorder>turnComboBox</zorder>
+   <zorder>storComboBox</zorder>
+   <zorder>label_8</zorder>
+   <zorder>label_15</zorder>
+   <zorder>vexpComboBox</zorder>
+   <zorder>dataComboBox</zorder>
+   <zorder>task2EstimateProjectButton</zorder>
   </widget>
   <widget class="QGroupBox" name="groupBox_3">
    <property name="geometry">
