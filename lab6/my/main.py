@@ -15,6 +15,7 @@ LIFE_STAGES_TM_PERCENTS = [36, 36, 18, 18, 28, 100, 136]
 WBS_PERCENTS = [4, 12, 44, 6, 14, 7, 7, 6, 100]
 
 CONSTANTS_FOR_PROJECTS_MODES = [
+    #{'c1': 1.46, 'p1': 1.05, 'c2': 2.5, 'p2': 0.38},
     {'c1': 3.2, 'p1': 1.05, 'c2': 2.5, 'p2': 0.38},
     {'c1': 3.0, 'p1': 1.12, 'c2': 2.5, 'p2': 0.35},
     {'c1': 2.8, 'p1': 1.2, 'c2': 2.5, 'p2': 0.32},
@@ -231,4 +232,6 @@ if __name__ == '__main__':
     sys.exit(main())
 
 # pyinstaller --add-data "mainwindow.ui;." main.py
+
+
 
